@@ -1,0 +1,12 @@
+{
+  "name": "xcurzen-voice",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "ws": "8.17.0"
+  }
+}

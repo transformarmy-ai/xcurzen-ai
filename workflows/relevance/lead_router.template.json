@@ -1,0 +1,38 @@
+{
+  "name": "Lead Router (template)",
+  "version": "1.0",
+  "trigger": "webhook",
+  "steps": [
+    {
+      "type": "classify",
+      "labels": [
+        "coast",
+        "jungle",
+        "other"
+      ]
+    },
+    {
+      "type": "enrich",
+      "fields": [
+        "company",
+        "website",
+        "geo"
+      ]
+    },
+    {
+      "type": "route",
+      "to": [
+        "calendar_clerk",
+        "revops_scribe"
+      ]
+    }
+  ],
+  "expects": {
+    "source": "string",
+    "vertical": "coast|jungle",
+    "name": "string",
+    "email": "string",
+    "phone": "string",
+    "activity": "string"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "Calendar Clerk (template)",
+  "version": "1.0",
+  "inputs": [
+    "lead_router.output"
+  ],
+  "actions": [
+    {
+      "type": "calcom.propose_slots",
+      "count": 3
+    },
+    {
+      "type": "calcom.create_event",
+      "on_accept": true
+    },
+    {
+      "type": "notify",
+      "channels": [
+        "email",
+        "slack"
+      ]
+    }
+  ]
+}
