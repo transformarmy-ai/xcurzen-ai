@@ -1,19 +1,28 @@
+version: "3.9"
 services:
   ollama:
     image: ollama/ollama:latest
-    runtime: nvidia
+    container_name: taa_ollama
+    restart: unless-stopped
     environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-    ports: ["11434:11434"]
+      - OLLAMA_KEEP_ALIVE=2h
     volumes:
       - ollama:/root/.ollama
-
+    ports:
+      - "11434:11434"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: ["gpu"]
   qdrant:
     image: qdrant/qdrant:latest
-    ports: ["6333:6333", "6334:6334"]
+    container_name: taa_qdrant
+    restart: unless-stopped
     volumes:
-      - qdrant:/qdrant/storage
-
+      - ${QDRANT_STORAGE:-./data/qdrant}:/qdrant/storage
+    ports:
+      - "6333:6333"
+      - "6334:6334"
 volumes:
-  ollama: { }
-  qdrant: { }
+  ollama:

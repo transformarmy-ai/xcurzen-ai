@@ -1,0 +1,65 @@
+{
+  "name": "Lead Router",
+  "description": "Classify incoming website leads and route to SDR, Partner, or Engineering.",
+  "triggers": [
+    {
+      "type": "webhook",
+      "path": "/lead-router"
+    }
+  ],
+  "steps": [
+    {
+      "type": "classify",
+      "inputs": {
+        "text": "{{data.note}}",
+        "labels": [
+          "BD",
+          "Vendor",
+          "Engineering",
+          "General"
+        ]
+      }
+    },
+    {
+      "type": "branch",
+      "on": "{{steps.0.output}}",
+      "cases": {
+        "BD": [
+          {
+            "type": "post",
+            "url": "https://hooks.slack.com/services/EXAMPLE/BD"
+          }
+        ],
+        "Vendor": [
+          {
+            "type": "post",
+            "url": "https://hooks.slack.com/services/EXAMPLE/VENDOR"
+          }
+        ],
+        "Engineering": [
+          {
+            "type": "post",
+            "url": "https://hooks.slack.com/services/EXAMPLE/ENG"
+          }
+        ],
+        "General": [
+          {
+            "type": "post",
+            "url": "https://hooks.slack.com/services/EXAMPLE/INFO"
+          }
+        ]
+      }
+    },
+    {
+      "type": "sheet.append",
+      "sheet": "Leads",
+      "values": [
+        "{{data.name}}",
+        "{{data.email}}",
+        "{{data.note}}",
+        "{{steps.0.output}}",
+        "{{now}}"
+      ]
+    }
+  ]
+}

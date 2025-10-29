@@ -1,17 +1,47 @@
-# RUNBOOK — v1.0
+# RUNBOOK — Day 1 Setup (v1.1.1)
 
-## Day‑1 goals
-- Live website with lead form.
-- Lead posts to Workforce; triage + propose 3 times.
-- Optional voice callback using Twilio + OpenAI Realtime.
+## 0) Prereqs
+- Node 20+ and npm
+- Docker Desktop/Engine (optional for local AI/hub)
+- A text editor
 
-## Steps
-1) Duplicate `ops/.env.example` to `ops/.env` and fill secrets.
-2) `apps/web`: `npm i && npm run dev`. Visit http://localhost:3000
-3) Submit the lead form; confirm it appears in Workforce runs.
-4) If voice enabled: call Twilio number; ensure transcript + booking.
+## 1) Env
+```bash
+cp ops/.env.example ops/.env
+```
+Fill at minimum:
+- `WORKFORCE_WEBHOOK_URL`
+- `STRIPE_SECRET_KEY`, `STRIPE_PRICE_BASIC`, `STRIPE_SUCCESS_URL`, `STRIPE_CANCEL_URL`
+- Optional: `CALCOM_*`, `OPENAI_API_KEY` (for upcoming voice)
 
-## Troubleshooting
-- 401 from Workforce: check `RELEVANCEAI_API_KEY` and webhook URL.
-- No calendar slots: verify `CALCOM_*` keys and event IDs.
-- Voice silence: confirm Twilio SIP domain/credentials and Realtime model name.
+> **Next.js tip**: Create `apps/web/.env.local` with the same keys for `npm run dev`.
+
+## 2) Web
+```bash
+cd apps/web
+npm i
+npm run dev
+```
+Visit http://localhost:3000 → test lead form and Stripe button. Vendor form at `/vendor-signup`.
+
+## 3) Local AI (optional)
+```bash
+cd ../../ops
+docker compose -f docker-compose.local.yml up -d
+```
+- Ollama on 11434
+- Qdrant on 6333
+
+## 4) Hub (optional)
+```bash
+docker compose -f docker-compose.hub.yml up -d
+```
+- n8n at 5678 (basic auth)
+- Grafana at 3001
+
+## 5) Relevance AI
+- Import `workflows/relevance/*.template.json` (Lead Router, Calendar Clerk, RevOps Scribe, ContentOps Weekly).
+- Wire Slack/Sheets/Email/CRM destinations per your environment.
+
+## 6) Upgrade Path
+- v1.2: Voice media bridge (Twilio <Stream> ↔ Realtime), Vendor dashboard, Qdrant indexing pipeline.

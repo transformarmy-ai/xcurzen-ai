@@ -1,5 +1,5 @@
-# VERSIONING — v1.0
+# VERSIONING
 
-- **Code:** semantic versioning MAJOR.MINOR.PATCH (e.g., 1.0.1).
-- **Documents:** increment in tenths (1.0, 1.1, 1.2). Update the header each edit.
-- Track notable changes in `CHANGELOG.md`.
+- **Docs**: human-friendly `vX.Y` at the top of each doc; track deltas in `CHANGELOG.md`.
+- **Code**: semantic versioning (MAJOR.MINOR.PATCH).
+- Tag releases in Git with `v1.1.1`, etc.

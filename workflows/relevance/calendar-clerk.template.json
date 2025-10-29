@@ -1,0 +1,27 @@
+{
+  "name": "Calendar Clerk",
+  "description": "Propose three time slots via Cal.com based on user preference and agent availability.",
+  "triggers": [
+    {
+      "type": "webhook",
+      "path": "/calendar-clerk"
+    }
+  ],
+  "steps": [
+    {
+      "type": "llm.extract",
+      "prompt": "Extract meeting details (duration, timezone, constraints) from {{data.text}}."
+    },
+    {
+      "type": "cal.find_slots",
+      "user": "{{env.CALCOM_USERNAME}}",
+      "duration": "{{steps.0.duration}}"
+    },
+    {
+      "type": "email.send",
+      "to": "{{data.email}}",
+      "subject": "Scheduling options",
+      "html": "<p>Pick a time: {{steps.1.slots}}</p>"
+    }
+  ]
+}

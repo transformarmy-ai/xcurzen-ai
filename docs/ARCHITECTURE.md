@@ -1,16 +1,24 @@
-# ARCHITECTURE — v1.0
+# ARCHITECTURE
 
 ```mermaid
-flowchart LR
-  Web[Next.js (Vercel)] -->|Webhook JSON| WF[Relevance AI Workforce]
-  WF -->|create event| Cal[Cal.com]
-  WF -->|update| CRM[(CRM: Notion/Airtable/HubSpot)]
-  WF --> Slack[Slack/Teams]
+flowchart TD
+  subgraph Web[Next.js — xcurzen.com]
+    UI[Lead Form] --> API[/api/lead/]
+  end
 
-  Tel[(Twilio)] --> RT[OpenAI Realtime API]
-  RT --> WF
+  API -->|POST JSON| Workforce[Agent Workforce Webhook]
 
-  subgraph Local GPU
-    Oll[Ollama] --> VDB[Qdrant]
+  subgraph Ops[Local Ops]
+    Ollama[(Ollama)]
+    Qdrant[(Qdrant)]
+    Hub[n8n + Grafana]
+  end
+
+  Workforce --> Hub
+  Hub <---> Qdrant
+  Hub <---> Ollama
+
+  subgraph Voice[Voice (v1.2 target)]
+    Twilio[(SIP/Phone)] --> Bridge[Node Stub ↔ OpenAI Realtime]
   end
 ```

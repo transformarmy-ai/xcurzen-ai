@@ -1,0 +1,39 @@
+{
+  "name": "RevOps Scribe",
+  "description": "Normalize lead or vendor data and append to CRM/Sheet.",
+  "triggers": [
+    {
+      "type": "webhook",
+      "path": "/revops-scribe"
+    }
+  ],
+  "steps": [
+    {
+      "type": "transform",
+      "mapping": {
+        "timestamp": "{{now}}",
+        "source": "{{data.source}}",
+        "type": "{{data.type}}",
+        "name": "{{data.data.name || data.data.contact_name}}",
+        "email": "{{data.data.email}}",
+        "business": "{{data.data.business_name}}",
+        "category": "{{data.data.category}}",
+        "notes": "{{data.data.note || data.data.notes}}"
+      }
+    },
+    {
+      "type": "sheet.append",
+      "sheet": "CRM",
+      "values": [
+        "{{steps.0.timestamp}}",
+        "{{steps.0.source}}",
+        "{{steps.0.type}}",
+        "{{steps.0.name}}",
+        "{{steps.0.email}}",
+        "{{steps.0.business}}",
+        "{{steps.0.category}}",
+        "{{steps.0.notes}}"
+      ]
+    }
+  ]
+}

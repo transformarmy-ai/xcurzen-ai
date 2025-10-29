@@ -1,0 +1,26 @@
+{
+  "name": "ContentOps Weekly",
+  "description": "Draft weekly blog + 3 social posts from recent leads/vendors.",
+  "triggers": [
+    {
+      "type": "cron",
+      "cron": "0 14 * * MON"
+    }
+  ],
+  "steps": [
+    {
+      "type": "sheet.read",
+      "sheet": "CRM",
+      "range": "A:H",
+      "limit": 50
+    },
+    {
+      "type": "llm.generate",
+      "prompt": "From the latest entries: draft 1 blog outline (markdown) and 3 short posts for social."
+    },
+    {
+      "type": "post",
+      "url": "https://hooks.slack.com/services/EXAMPLE/CONTENT"
+    }
+  ]
+}

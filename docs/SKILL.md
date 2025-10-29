@@ -1,42 +1,24 @@
-# SKILL: Transform Army AI — v1.0
+# Transform Army AI — SKILL v1.1.1
 
-**Purpose:** Equip any LLM/agent with the **context, constraints, and output formats** needed to contribute to the *xcurzen.com* agentic workforce.
+**Purpose**: Equip LLMs/agents to support the Transform Army AI stack for **xcurzen.com**.
 
-## Identity
-- **Project:** Transform Army AI
-- **Domain:** xcurzen.com — coastal Corpus Christi & Costa Rica jungle rentals
-- **Mission:** Capture leads → qualify → schedule → call back → publish content → enable payments
+## Capabilities
+- Website lead intake → forward to Workforce webhook.
+- Stripe Checkout on the landing page.
+- Vendor Signup → forward to Workforce as `vendor_signup` event.
+- Orchestrate local stack (Ollama + Qdrant) and hub (n8n + Grafana).
+- Workflow patterns: Lead Router, Calendar Clerk, RevOps Scribe, ContentOps Weekly.
+- Voice path: Twilio SIP ↔ OpenAI Realtime (stub provided).
 
-## Roles (agents)
-- **Lead Router:** classify A/B/C, enrich lead, route pipeline (coast/jungle).
-- **Calendar Clerk:** propose 3 time slots, book via Cal.com, send confirmations.
-- **RevOps Scribe:** update CRM (Notion/Airtable/HubSpot), post Slack/Teams.
-- **ContentOps:** generate blog/social posts, SEO meta, email follow-ups.
-- **Voice Front Desk:** Realtime voice agent to answer or call back.
+## Conventions
+- Environment in `ops/.env`. For Next.js dev, you may also create `apps/web/.env.local`.
+- Docs use doc-versioning; code uses semver.
+- Use RUNBOOK for setup; ARCHITECTURE for the big picture.
 
-## Data boundaries
-- Never log secrets. Use server-only envs for API keys.
-- PII (name/phone/email) only for scheduling & CRM; encrypt at rest.
-
-## Tools (preferred order)
-1. **Relevance AI Workforce** (triggers, workflows, approvals)
-2. **OpenAI Responses/Realtime** (cognition + voice)
-3. **Cal.com** (scheduling)
-4. **Stripe/Connect** (payments)
-5. **Optional Local**: Ollama (embeddings, small models), Qdrant (vector store)
-
-## Output formats
-- **Markdown** for docs & messages to humans.
-- **JSON** for webhooks and workflow payloads (schema in `docs/ARCHITECTURE.md`).
-- **.env** keys as `UPPER_SNAKE_CASE=value` pairs.
-
-## Environment contract (critical vars)
-- `WORKFORCE_WEBHOOK_URL`, `OPENAI_API_KEY`, `TWILIO_*`, `CALCOM_*`, `STRIPE_*`, `NEXT_PUBLIC_SITE_URL=https://xcurzen.com`
-
-## Success checks (scoring)
-- T+24h: demo loop runs end-to-end with a sample lead.
-- p95 < 3s for lead → triage ack.
-- Callback scheduled within 2 minutes of lead creation.
-
-## Style
-- Speak simply (7th-grader/Jr dev). Avoid jargon unless explained.
+## Bootstrap Checklist
+1. Copy `ops/.env.example` → `ops/.env`; set keys and URLs.
+2. Optionally mirror envs to `apps/web/.env.local` for dev.
+3. `apps/web`: `npm i && npm run dev` → open http://localhost:3000.
+4. Optional local stack: `docker compose -f ops/docker-compose.local.yml up -d`.
+5. Optional hub: `docker compose -f ops/docker-compose.hub.yml up -d`.
+6. Import workflow templates into Relevance AI; set destinations.
